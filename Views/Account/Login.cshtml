@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    body.login-page footer {
+        display: none;
+    }
+
+    body {
+        background-image: url('/img/image/login.png');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+</style>
+<section class=" login-area">   
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="login-content" style="border-radius: 20px; background-color: rgba(22, 21, 12, 0.9);">
+                    <h3 style="color: white">Fleur D Amour(them logo o day) </h3>
+                    <div class="login-form">
+                        <form method="post">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="user" placeholder="UserName" style="border-radius: 10px">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="pass" placeholder="Password" style="border-radius: 10px">
+                                <small id="emailHelp" class="form-text text-muted"><i class="fa fa-lock mr-2"></i>We'll never share your account with anyone else.</small>
+                            </div>
+                            @if (@ViewBag.Error != null)
+                            {
+                                <div class="mt-4">
+                                    <div class="d-flex justify-content-center links">
+                                        <span style="font-weight:bold">@ViewBag.Error</span>
+                                    </div>
+                                </div>
+                            }
+                            <button type="submit" class="btn oneMusic-btn mt-30" style="border-radius: 10px">Login</button>
+                        </form>
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-center links" style="color: white">
+                                Don't have an account? <a asp-action="Register" class="ml-2" style="color:#DCC40C">Register</a>
+                            </div>
+                            <div class="d-flex justify-content-center links">
+                                <a asp-action="ForgotPassword" style="color:#DCC40C">Forgot your password?</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

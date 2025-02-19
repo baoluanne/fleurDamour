@@ -1,0 +1,121 @@
+﻿@model IEnumerable<fleurDamour.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    FleurDamourContext db = new();
+
+    var products = db.Products.ToList();
+    var pro = products.Take(9).ToList();
+}
+<style>
+
+
+    .events-area {
+        background-color: black;
+    }
+
+    .event-thumbnail {
+        width: 100%; /* Định chiều rộng cố định */
+        height: 400px; /* Định chiều cao cố định */
+        overflow: hidden; /* Đảm bảo không bị tràn */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .event-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Giữ tỷ lệ ảnh, cắt phần dư */
+            border-top-left-radius: 10px; /* Bo góc nếu cần */
+            border-top-right-radius: 10px;
+        }
+
+</style>
+<section class="breadcumb-area bg-img bg-overlay" style="background-image: url('@Url.Content("~/img/image/10.png")');">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h1 style="color: white">Product</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="events-area section-padding-100">
+    <div class="container">
+        <div class="row" id="productContainer">
+            @foreach (var item in pro)
+            {
+                <div class="col-12 col-md-6 col-lg-4 product-item">
+                    <div class="single-event-area mb-30">
+                        <div class="event-thumbnail">
+                            <img src="@item.ImgProduct" alt="@item.NameProduct" />
+                        </div>
+                        <div class="event-text" style="border: 1px solid white">
+                            <h4>@item.NameProduct</h4>
+                            <div class="event-meta-data">
+                                <a href="#" class="event-place">Price: @item.Price vnd</a>
+                                <a href="#" class="event-date">Quantity: @item.Quantity</a>
+                            </div>
+                            <a asp-action="Product" asp-controller="Product" asp-route-id="@item.Idproduct" class="btn see-more-btn">See Product</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="load-more-btn text-center mt-70">
+                    <a id="loadMore" class="btn oneMusic-btn">Load More <i class="fa fa-angle-double-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let products = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(products));
+        let currentIndex = 9; // Bắt đầu từ sản phẩm thứ 9
+        let productsPerPage = 9; // Mỗi lần load thêm 9 sản phẩm
+
+        document.getElementById("loadMore").addEventListener("click", function () {
+            let productContainer = document.getElementById("productContainer");
+
+            for (let i = currentIndex; i < currentIndex + productsPerPage && i < products.length; i++) {
+                let item = products[i];
+
+                let productHtml = `
+                            <div class="col-12 col-md-6 col-lg-4 product-item">
+                                    <div class="single-event-area mb-30">
+                                        <div class="event-thumbnail">
+                                            <img src="${item.ImgProduct}" alt="${item.NameProduct}" />
+                                        </div>
+                                        <div class="event-text">
+                                                <h4>${item.NameProduct}</h4>
+                                                <div class="event-meta-data">
+                                                           <a href="#" class="event-place">Price: ${item.Price} vnd</a>
+                                                        <a href="#" class="event-date">Quantity: ${item.Quantity}</a>
+                                                </div>
+                                                    <a asp-action="Product" asp-controller="Product" asp-route-id="${item.Idproduct}" class="btn see-more-btn">See Product</a>
+                                                </div>
+                                        </div>
+                                    </div>`;
+
+                productContainer.insertAdjacentHTML("beforeend", productHtml);
+            }
+
+            currentIndex += productsPerPage;
+
+            // Ẩn nút Load More nếu không còn sản phẩm
+            if (currentIndex >= products.length) {
+                document.getElementById("loadMore").style.display = "none";
+            }
+        });
+    });
+</script>

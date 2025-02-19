@@ -1,0 +1,208 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    FleurDamourContext db = new();
+}
+<style>
+    .featured-artist-content p {
+        font-size: 30px;
+        width: 100%;
+        text-transform: none;
+        letter-spacing: 1px;
+        line-height: 1.5;
+        color: white;
+        font-weight: 200;
+        font-family: 'Times New Roman', Times, serif
+    }
+
+    .section-heading h2 {
+        font-size: 2rem;
+        text-transform: none;
+        letter-spacing: 3px;
+        line-height: 1.5;
+        color: white;
+        font-weight: 200;
+        font-family: 'Times New Roman', Times, serif
+    }
+
+    .single-album {
+        margin: 10px;
+        background-color: #f2f2f2;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        width: 200px;
+    }
+
+        .single-album img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+
+
+
+
+    .album-info {
+        padding: 10px;
+        text-align: center;
+    }
+
+        .album-info h6 {
+            margin: 0;
+        }
+
+
+
+
+
+    .featured-artist-thumb img {
+        width: 100%;
+        height: 800px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+</style>
+
+<section class="hero-area">
+    <div class="hero-slides owl-carousel">
+        <div class="single-hero-slide d-flex align-items-center justify-content-center">
+            <div class="slide-img bg-img" style="background-image: url(img/image/5.png);"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="hero-slides-content text-center">
+                            <h3 data-animation="fadeInUp" data-delay="100ms" style="text-transform:none; letter-spacing: 3px; line-height: 1.5; color: white;font-weight:200; font-family:'Times New Roman', Times, serif">
+                                Preserving beauty, capturing hearts.<br>
+                                Love at first sight.
+                            </h3>
+                            <a data-animation="fadeInUp" data-delay="500ms" asp-controller="" asp-action="" class="btn oneMusic-btn mt-50" style="border-radius: 20px; border-color:black; background-color:black; color:white">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="abount-area" class="section-padding-100 bg-dark">
+    <div class="row align-items-center d-flex justify-content-center">
+        <div class="col-12 col-lg-5">
+            <div class="featured-artist-content">
+                <div class="section-heading white text-left mb-30">
+                    <h2>Elevating Nature’s Elegance:<br /> Sustainable Beauty in Bloom</h2>
+                </div>
+                <p>Bringing sustainable and meaningful value to life by recycling and elevating the beauty of dried flowers, so that each product becomes not only a decorative piece but also a symbol of elegance and gratitude toward nature.</p>
+                <div class="load-more-btn text-center wow fadeInUp m-5" data-wow-delay="300ms">
+                    <a asp-action="About" asp-controller="Home" class="btn oneMusic-btn">Load More <i class="fa fa-angle-double-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-5">
+            <div class="featured-artist-thumb">
+                <img src="~/img/image/1.png" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ##### Buy Now Area Start ##### -->
+<section id="latest-albums-area" class="oneMusic-buy-now-area has-fluid bg-dark section-padding-100">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading style-2">
+                    <h2>Product(them anh vao`) </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="album-area">
+                    <div class="albums-slideshow owl-carousel container d-flex flex-wrap justify-content-center">
+                        @{
+                            var p = db.Products.Take(5).ToList();
+                        }
+                        @foreach (var item in p)
+                        {
+                            <div class="single-album wow fadeInUp" data-wow-delay="100ms">
+                                <div class="album-thumbnail">
+                                    <a asp-controller="*" asp-action="*" asp-route-id="@item.Idproduct">
+                                        <img src="@item.ImgProduct" alt="Pic Product">
+                                    </a>
+                                </div>
+                                <div class="album-info">
+                                    <a asp-controller="*" asp-action="*" asp-route-id="@item.Idproduct">
+                                        <h6>@item.NameProduct</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="load-more-btn text-center wow fadeInUp m-5" data-wow-delay="300ms">
+                    <a asp-controller="Product" asp-action="Index" class="btn oneMusic-btn">Load More <i class="fa fa-angle-double-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### Buy Now Area End ##### -->
+<!-- ##### Contact Area Start ##### -->
+<section id="contact-area" class="contact-area section-padding-100 bg-img bg-overlay bg-fixed has-bg-img" style="background-image: url(img/image/3.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading white wow fadeInUp" data-wow-delay="100ms">
+                    <p>See what’s new</p>
+                    <h2>Contact us</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <!-- Contact Form Area -->
+                <div class="contact-form-area">
+                    <form action="#" method="post">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group wow fadeInUp" data-wow-delay="100ms">
+                                    <input type="text" class="form-control" id="name" placeholder="Name">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="form-group wow fadeInUp" data-wow-delay="200ms">
+                                    <input type="email" class="form-control" id="email" placeholder="E-mail">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group wow fadeInUp" data-wow-delay="300ms">
+                                    <input type="text" class="form-control" id="subject" placeholder="Subject">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group wow fadeInUp" data-wow-delay="400ms">
+                                    <textarea name="message" class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12 text-center wow fadeInUp" data-wow-delay="500ms">
+                                <button class="btn oneMusic-btn mt-30" type="submit">Send <i class="fa fa-angle-double-right"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### Contact Area End ##### -->

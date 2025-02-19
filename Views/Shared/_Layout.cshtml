@@ -1,0 +1,302 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+    FleurDamourContext db = new();
+    var categories = db.Categories.ToList();
+}
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewData["Title"] - fleurDamour</title>
+    <link rel="icon" type="image/x-icon" href="img/image/13.png">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <style>
+
+        /* Footer Area */
+        .footer-area {
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 50px 0;
+        }
+
+        /* Section background */
+        .contact-area {
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Menu List Styling */
+        .menu-list, .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            padding-left: 110px; /* Mặc định trên màn hình lớn */
+        }
+
+            .menu-list li, .contact-list li {
+                margin-bottom: 15px;
+                font-size: 20px;
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                border-radius: 8px;
+                transition: transform 0.3s, background-color 0.3s;
+            }
+
+                .menu-list li:hover, .contact-list li:hover {
+                    transform: scale(1.05); /* Phóng to nhẹ */
+                    background-color: rgba(255, 255, 255, 0.2); /* Thay đổi màu nền */
+                }
+
+                .menu-list li i, .contact-list li i {
+                    color: white; /* Màu icon */
+                    font-size: 20px;
+                    margin-right: 10px;
+                }
+
+                .menu-list li a, .contact-list li a {
+                    text-decoration: none;
+                    color: #fff;
+                    transition: color 0.3s;
+                }
+
+                    .menu-list li a:hover, .contact-list li a:hover {
+                        color: #ffcc00; /* Màu khi hover */
+                    }
+
+        /* Responsive Adjustments */
+        @@media (max-width: 768px) {
+            .menu-list, .contact-list {
+                padding-left: 20px; /* Giảm padding trên màn hình nhỏ */
+            }
+
+                .menu-list li, .contact-list li {
+                    font-size: 16px; /* Giảm kích thước font chữ */
+                    flex-direction: column; /* Icon và text xếp chồng nhau */
+                    text-align: center;
+                }
+
+                    .menu-list li i, .contact-list li i {
+                        margin-bottom: 8px; /* Tạo khoảng cách giữa icon và text */
+                    }
+        }
+
+        @@media (max-width: 480px) {
+            .menu-list, .contact-list {
+                padding-left: 10px; /* Thêm căn lề nhỏ hơn */
+            }
+
+                .menu-list li, .contact-list li {
+                    font-size: 14px; /* Nhỏ hơn nữa trên màn hình rất nhỏ */
+                    padding: 8px; /* Giảm padding cho phù hợp */
+                }
+
+                    .menu-list li i, .contact-list li i {
+                        font-size: 18px; /* Giảm kích thước icon */
+                    }
+        }
+
+    </style>
+</head>
+
+
+<body class="@(currentController == "Account" && currentAction == "Login" ? "login-page" : (currentController == "Account" && currentAction == "Register" ? "register-page" : ""))">
+
+    <!-- Preloader -->
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area">
+        <!-- Navbar Area -->
+        <div class="oneMusic-main-menu">
+            <div class="classy-nav-container breakpoint-off">
+                <div class="container">
+                    <!-- Menu -->
+                    <nav class="classy-navbar justify-content-between" id="oneMusicNav">
+                        <!-- logo -->
+                        <a asp-controller="Home" asp-action="Index" class="nav-brand"><img src="@Url.Content("~/img/image/13.png")" alt=""></a>
+                        <!-- Navbar Toggler -->
+                        <div class="classy-navbar-toggler">
+                            <span class="navbarToggler"><span></span><span></span><span></span></span>
+                        </div>
+                        <!-- Menu -->
+                        <div class="classy-menu">
+                            <!-- Close Button -->
+                            <div class="classycloseIcon">
+                                <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                            </div>
+                            <!-- Nav Start -->
+                            <div class="classynav">
+                                <ul>
+                                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="abount-area">About Us</a></li>
+                                    <li>
+                                        <a href="#">Category</a>
+                                        <ul class="dropdown">
+                                            @foreach(var item in categories)
+                                            {
+                                                <li><a asp-action="Category" asp-controller="Product" asp-route-id="@item.Idcategory">@item.NameCategory</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="latest-albums-area">Product</a></li>
+                                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="">Contact</a></li>
+                                </ul>
+                                <!-- Login/Register & Cart Button -->
+                                @{
+                                    string userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+
+                                    Account UserAcc = null;
+                                    if (!string.IsNullOrEmpty(userName))
+                                    {
+                                        UserAcc = LoginState.UserAcc(userName);
+                                    }
+                                }
+
+                                @if (UserAcc != null && LoginState.IsLogged(userName))
+                                {
+                                    <ul>
+                                        <li>
+                                            <a href="#">User: @UserAcc.AccountName</a>
+                                            <ul class="dropdown">
+                                                <li><a asp-action="Profile" asp-controller="Account" asp-route-id="@UserAcc.UserName">Profile</a></li>
+                                                @if (UserAcc.Role == "Admin")
+                                                {
+                                                    <li><a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Dashboard</a></li>
+                                                }
+                                                <li><a asp-area="User" asp-controller="Account" asp-action="Logout">Logout!</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <div class="login-register-cart-button d-flex align-items-center">
+                                        <div class="login-register-btn mr-50">
+                                            <ul class="login-register-btn mr-50">
+                                                <a asp-controller="Account" asp-action="Login" id="loginBtn">Login</a>
+                                                <a readonly> / </a>
+                                                <a asp-controller="Account" asp-action="Register">Register</a>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                           
+                            <!-- Nav End -->
+
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ##### Header Area End ##### -->
+    @RenderBody()
+
+     @*    <footer class="footer-area">
+            <section class="contact-area section-padding-100 bg-img bg-overlay bg-fixed has-bg-img" style="background-image: url(img/image/3.png);">
+                <div class="row align-items-center d-flex justify-content-between">
+                    <!-- Main Menu -->
+                    <div class="col-12 col-lg-5">
+                        <div class="section-heading white wow fadeInUp" data-wow-delay="100ms">
+                            <h2>Main Menu</h2>
+                            <ul class="menu-list">
+                                <li><a href="#"><i class="fas fa-home"></i> Home Page</a></li>
+                                <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+                                <li><a href="#"><i class="fas fa-box"></i> About Product</a></li>
+                                <li><a href="#"><i class="fas fa-shopping-cart"></i> Shopping</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Contact Us -->
+                    <div class="col-12 col-lg-5">
+                        <div class="section-heading white wow fadeInUp" data-wow-delay="100ms">
+                            <h2>Contact Us</h2>
+                            <ul class="contact-list">
+                                <li><a href="#"><i class="fas fa-map-marker-alt"></i> Address: 600 Nguyen Van Cu Noi Dai, An Binh, Binh Thuy, Can Tho, Viet Nam</a></li>
+                                <li><a href="#"><i class="fas fa-phone-alt"></i> Phone: 02927303636</a></li>
+                                <li><a href="#"><i class="fas fa-envelope"></i> Email: ss.ct@fe.edu.vn</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </footer> *@
+
+    <footer class="footer-area">
+        <div class="container">
+            <div class="row d-flex flex-wrap align-items-center">
+                <div class="col-12 col-md-6">
+                    <nav class="classy-navbar">
+                        <a asp-controller="Home" asp-action="Index" class="nav-brand">
+                            <img src="@Url.Content("~/img/image/13.png")" alt="">
+                            <i class="fa fa-check-circle" style="font-size:15px;color: green"></i>
+                        </a>
+                    </nav>
+                    <p class="copywrite-text">
+                        <a href="#">
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> All rights reserved by <a href="#" target="_blank">FleurDamour</a>
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </p>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="footer-nav">
+                        <ul>
+                            <li>
+                                <a asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Home" asp-action="Index" asp-fragment="abount-area">Abount Us</a>
+                            </li>
+                            <li>
+                                <a asp-controller="" asp-action="" asp-fragment="abount-area">Category</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Home" asp-action="Index" asp-fragment="latest-albums-area">Product</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Home" asp-action="Index" asp-fragment="contact-area">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Font Awesome CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- ##### All Javascript Script ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="~/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="~/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="~/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="~/js/plugins/plugins.js"></script>
+    <!-- Active js -->
+    <script src="~/js/active.js"></script>
+
+</body>
+</html>
