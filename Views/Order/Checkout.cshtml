@@ -1,0 +1,105 @@
+﻿@model fleurDamour.Models.Order
+
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .checkout-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Giữ nguyên các style khác */
+</style>
+
+<div class="checkout-container">
+    <div class="checkout-header">
+        <h2>Checkout</h2>
+    </div>
+
+    <div class="checkout-section">
+        <h4>Order Summary</h4>
+        <p><strong>Order ID:</strong> @ViewBag.Order.Idorder</p>
+        <p><strong>Order Date:</strong> @ViewBag.Order.OrderDay?.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Total Price:</strong> @ViewBag.Order.TotalPrice.ToString("N0") VND</p>
+    </div>
+
+    <div class="checkout-section">
+        <h4>Product Details</h4>
+        <p><strong>Product:</strong> @ViewBag.Product.NameProduct</p>
+        <p><strong>Quantity:</strong> @ViewBag.Quantity</p>
+        <p><strong>Price per Unit:</strong> @ViewBag.Product.Price.ToString("N0") VND</p>
+        <p><strong>Subtotal:</strong> @((ViewBag.Product.Price * ViewBag.Quantity)?.ToString("N0")) VND</p>
+    </div>
+
+    <form id="checkoutForm" method="post">
+        <div class="checkout-section">
+            <h4>Shipping Information</h4>
+            <label>Name:</label>
+            <input type="text" name="newReceiver" class="form-control" value="@ViewBag.User.AccountName" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" class="form-control" value="@ViewBag.User.Email" required>
+
+            <label>Phone:</label>
+            <input type="text" name="newPhone" class="form-control" value="@ViewBag.User.Phone" required>
+
+            <label>Address:</label>
+            <input type="text" name="newAddress" class="form-control" value="@ViewBag.User.Address" required>
+        </div>
+
+        <div class="checkout-section">
+            <h4>Payment Method</h4>
+            <div class="payment-method">
+                <label>
+                    <input type="radio" name="paymentMethod" value="cash" checked>
+                    Pay on Delivery
+                </label>
+                <label>
+                    <input type="radio" name="paymentMethod" value="qr">
+                    Scan QR Code
+                </label>
+            </div>
+        </div>
+
+        <input type="hidden" name="orderId" value="@ViewBag.Order.Idorder">
+        <input type="hidden" name="productId" value="@ViewBag.Product.Idproduct">
+        <input type="hidden" name="quantity" value="@ViewBag.Quantity">
+
+        <button type="submit" class="btn btn-confirm">Confirm Purchase</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#checkoutForm").on("submit", function (e) {
+                e.preventDefault(); // Ngăn form submit mặc định
+
+                $.ajax({
+                    url: '@Url.Action("ConfirmCheckout")',
+                    type: 'POST',
+                    data: $(this).serialize(), // Lấy dữ liệu từ form
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message); // Hiển thị alert
+                            window.location.href = '@Url.Action("Index", "Home")'; // Chuyển hướng về trang home
+                        } else {
+                            alert("Có lỗi xảy ra, vui lòng thử lại.");
+                        }
+                    },
+                    error: function () {
+                        alert("Đã xảy ra lỗi khi xử lý đơn hàng.");
+                    }
+                });
+            });
+        });
+    </script>
+}

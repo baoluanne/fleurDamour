@@ -1,3 +1,4 @@
+using System;
 namespace fleurDamour.Models
 {
     public class ErrorViewModel

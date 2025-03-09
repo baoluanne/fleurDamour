@@ -155,7 +155,7 @@
                                         </ul>
                                     </li>
                                     <li><a asp-controller="Home" asp-action="Index" asp-fragment="latest-albums-area">Product</a></li>
-                                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="">Contact</a></li>
+                                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="contact-area">Contact</a></li>
                                 </ul>
                                 <!-- Login/Register & Cart Button -->
                                 @{
@@ -175,7 +175,7 @@
                                             <a href="#">User: @UserAcc.AccountName</a>
                                             <ul class="dropdown">
                                                 <li><a asp-action="Profile" asp-controller="Account" asp-route-id="@UserAcc.UserName">Profile</a></li>
-                                                @if (UserAcc.Role == "Admin")
+                                                @if (LoginState.IsLogged(userName) && UserAcc.Role == "Admin")
                                                 {
                                                     <li><a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Dashboard</a></li>
                                                 }
@@ -208,7 +208,7 @@
     </header>
     <!-- ##### Header Area End ##### -->
     @RenderBody()
-
+    @RenderSection("Scripts", required: false)
      @*    <footer class="footer-area">
             <section class="contact-area section-padding-100 bg-img bg-overlay bg-fixed has-bg-img" style="background-image: url(img/image/3.png);">
                 <div class="row align-items-center d-flex justify-content-between">

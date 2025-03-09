@@ -9,7 +9,7 @@ public partial class ShoppingCart
 
     public string Idproduct { get; set; } = null!;
 
-    public string? Quantity { get; set; }
+    public int? Quantity { get; set; }
 
     public DateTime? AddDate { get; set; }
 

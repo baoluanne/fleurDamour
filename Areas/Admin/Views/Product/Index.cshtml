@@ -1,0 +1,163 @@
+﻿@using fleurDamour.Models
+@model IEnumerable<fleurDamour.Models.Product>
+
+@{
+    ViewData["Title"] = "Product Management";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    FleurDamourContext db = new();
+}
+
+<h1>Product Management</h1>
+
+<p><button href="#createModal" class="btn btn-primary" data-toggle="modal">Create new product</button></p>
+
+<table id="TableData" class="table table-striped table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.ImgProduct)</th>
+            <th>@Html.DisplayNameFor(model => model.Idproduct)</th>
+            <th>@Html.DisplayNameFor(model => model.NameProduct)</th>
+            <th>@Html.DisplayNameFor(model => model.Price)</th>
+            <th>@Html.DisplayNameFor(model => model.Quantity)</th>
+            <th>@Html.DisplayNameFor(model => model.Idcategories)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><img src="@item.ImgProduct" alt="Product" style="max-height:50px; border-radius:5px" /></td>
+                <td>@Html.DisplayFor(modelItem => item.Idproduct)</td>
+                <td>@Html.DisplayFor(modelItem => item.NameProduct)</td>
+                <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                <td>
+                    @foreach (var cat in item.Idcategories)
+                    {
+                        <span>@cat.NameCategory</span>
+                        if (item.Idcategories.Last() != cat)
+                        {
+                            <span> - </span>
+                        }
+                    }
+                </td>
+                <td>
+                    <a class="modal-button" data-modal="EditModal_@item.Idproduct" href="#"><i class="fa-regular fa-pen-to-square" style="color: #000000; font-size: 200%;"></i></a>
+                    <div class="modal" id="EditModal_@item.Idproduct" style="background-color: rgba(0, 0, 0, 0.6);">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <form asp-action="Edit" method="post">
+                                    <div class="modal-body">
+                                        <input name="Idproduct" value="@item.Idproduct" type="hidden" />
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                                            <input type="text" name="ImgProduct" class="form-control" value="@item.ImgProduct" placeholder="Image URL" />
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fa-solid fa-tag"></i></span>
+                                            <input type="text" name="NameProduct" class="form-control" value="@item.NameProduct" placeholder="Product Name" />
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
+                                            <input type="number" name="Price" class="form-control" value="@item.Price" placeholder="Price" />
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
+                                            <input type="number" name="Quantity" class="form-control" value="@item.Quantity" placeholder="Quantity" />
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fa-solid fa-info"></i></span>
+                                            <input type="text" name="InfoProduct" class="form-control" value="@item.InfoProduct" placeholder="Product Info" />
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
+                                            <select name="Idcategory" class="form-control">
+                                                @foreach (var category in db.Categories)
+                                                {
+                                                    <option value="@category.Idcategory" selected="@(item.Idcategories.Any(c => c.Idcategory == category.Idcategory))">@category.NameCategory</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success">Edit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="modal-button" data-modal="DeleteModal_@item.Idproduct" href="#"><i class="fa-regular fa-trash-can" style="color: #000000; font-size: 200%;"></i></a>
+                    <div class="modal" id="DeleteModal_@item.Idproduct" style="background-color: rgba(0, 0, 0, 0.6);">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    Are you sure you want to delete <span style="font-weight: bold">@item.NameProduct (@item.Idproduct)</span>?
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Idproduct">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-id-badge"></i></span>
+                        <input type="text" name="Idproduct" class="form-control" placeholder="Product ID" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-tag"></i></span>
+                        <input type="text" name="NameProduct" class="form-control" placeholder="Product Name" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                        <input type="text" name="ImgProduct" class="form-control" placeholder="Image URL" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
+                        <input type="number" name="Price" class="form-control" placeholder="Price" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
+                        <input type="number" name="Quantity" class="form-control" placeholder="Quantity" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-info"></i></span>
+                        <input type="text" name="InfoProduct" class="form-control" placeholder="Product Info" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
+                        <select name="Idcategory" class="form-control">
+                            @foreach (var category in db.Categories)
+                            {
+                                <option value="@category.Idcategory">@category.NameCategory</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#TableData").DataTable();
+        });
+    </script>
+}

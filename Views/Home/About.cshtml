@@ -3,30 +3,120 @@
     FleurDamourContext db = new();
 }
 <style>
-
-    .events-area {
-        background-color: black;
+    .about-content{
+        padding: 2vh;
     }
 
-    .event-thumbnail {
-        width: 100%; /* Định chiều rộng cố định */
-        height: 400px; /* Định chiều cao cố định */
-        overflow: hidden; /* Đảm bảo không bị tràn */
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .featured-artist-content p {
+        font-size: 30px;
+        width: 100%;
+        text-transform: none;
+        letter-spacing: 1px;
+        line-height: 1.5;
+        color: white;
+        font-weight: 200;
+        font-family: 'Times New Roman', Times, serif
     }
 
-        .event-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Giữ tỷ lệ ảnh, cắt phần dư */
-            border-top-left-radius: 10px; /* Bo góc nếu cần */
-            border-top-right-radius: 10px;
-        }
+    .featured-artist-thumb img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+    .section-heading h2{
+        font-size: 50px;
+        text-transform: none;
+        letter-spacing: 3px;
+        line-height: 1.5;
+        color: white;
+        font-weight: 200;
+        font-family: 'Times New Roman', Times, serif
+    }
+    @@media (max-width: 991px) {
+    .about-content:nth-child(2) .row {
+        flex-direction: column-reverse;
+    }
+    
+}
+
 </style>
 
-<section class="breadcumb-area bg-img bg-overlay" >
-hello
+<section class="breadcumb-area bg-img bg-overlay" style="background-image: url('@Url.Content("~/img/image/3.png")');">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h1 style="color: white">About Us</h1>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+<!-- ##### Breadcumb Area End ##### -->
+<!-- ##### Events Area Start ##### -->
+<section id="about-area" class="section-padding-100 bg-dark">
+    <div class="about-content">
+        <div class="row align-items-center d-flex justify-content-center">
+            <div class="col-12 col-lg-5">
+                <div class="featured-artist-content">
+                    <div class="section-heading white text-left mb-30">
+                        <h2>Elevating Nature’s Elegance:<br /> Sustainable Beauty in Bloom</h2>
+                    </div>
+                    <p>Bringing sustainable and meaningful value to life by recycling and elevating the beauty of dried
+                        flowers, so that each product becomes not only a decorative piece but also a symbol of elegance
+                        and gratitude toward nature.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="featured-artist-thumb">
+                    <img src="~/img/image/1.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="about-content">
+        <div class="row align-items-center d-flex justify-content-center">
+            <div class="col-12 col-lg-5">
+                <div class="featured-artist-thumb">
+                    <img src="~/img/image/4.png" alt="">
+                </div>
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="featured-artist-content">
+                    <div class="section-heading white text-left mb-30">
+                        <h2>Mission</h2>
+                    </div>
+                    <p>The FLEUR D'AMOUR - team is not only a group of colleagues but also friends sharing the same 
+                        ideals in our journey to protect the environment and spread love through meaningful
+                        dried flower products.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-content">
+        <div class="row align-items-center d-flex justify-content-center">
+            <div class="col-12 col-lg-5">
+                <div class="featured-artist-content">
+                    <div class="section-heading white text-left mb-30">
+                        <h2>Vision</h2>
+                    </div>
+                    <p>
+                        The FLEUR D'AMOUR - aims to become a pioneering brand in recycling excess fresh flowers into 
+                        sustainable dried flower products, contributing to building a green and environmentally friendly 
+                        lifestyle for the community.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="featured-artist-thumb">
+                    <img src="~/img/image/8.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

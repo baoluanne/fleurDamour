@@ -1,0 +1,104 @@
+﻿@model IEnumerable<fleurDamour.Models.Category>
+
+@{
+    ViewData["Title"] = "Category Management";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Category Management</h1>
+
+<p><button href="#createModal" class="btn btn-primary" data-toggle="modal">Create new category</button></p>
+
+<table id="TableData" class="table table-striped table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.PicCategory)</th>
+            <th>@Html.DisplayNameFor(model => model.Idcategory)</th>
+            <th>@Html.DisplayNameFor(model => model.NameCategory)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><img src="@item.PicCategory" alt="Picture" style="max-height:50px; border-radius:5px" /></td>
+                <td>@Html.DisplayFor(modelItem => item.Idcategory)</td>
+                <td>@Html.DisplayFor(modelItem => item.NameCategory)</td>
+                <td>
+                    <a class="modal-button" data-modal="EditModal_@item.Idcategory" href="#"><i class="fa-regular fa-pen-to-square" style="color: #000000; font-size: 200%;"></i></a>
+                    <div class="modal" id="EditModal_@item.Idcategory" style="background-color: rgba(0, 0, 0, 0.6);">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <form asp-action="Edit" method="post">
+                                    <div class="modal-body">
+                                        <input name="Idcategory" value="@item.Idcategory" type="hidden" />
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
+                                            <input type="text" name="NameCategory" class="form-control" value="@item.NameCategory" placeholder="Name Category" />
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                                            <input type="text" name="PicCategory" class="form-control" value="@item.PicCategory" placeholder="Picture Category" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success">Edit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="modal-button" data-modal="DeleteModal_@item.Idcategory" href="#"><i class="fa-regular fa-trash-can" style="color: #000000; font-size: 200%;"></i></a>
+                    <div class="modal" id="DeleteModal_@item.Idcategory" style="background-color: rgba(0, 0, 0, 0.6);">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    Are you sure you want to delete <span style="font-weight: bold">@item.NameCategory (@item.Idcategory)</span>?
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Idcategory">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
+                        <input type="text" name="Idcategory" class="form-control" placeholder="ID Category" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
+                        <input type="text" name="NameCategory" class="form-control" placeholder="Name Category" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                        <input type="text" name="PicCategory" class="form-control" placeholder="Picture Category" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#TableData").DataTable();
+        });
+    </script>
+}

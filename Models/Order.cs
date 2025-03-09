@@ -11,7 +11,7 @@ public partial class Order
 
     public DateTime? OrderDay { get; set; }
 
-    public string? TotalPrice { get; set; }
+    public double? TotalPrice { get; set; }
 
     public virtual Account? UidNavigation { get; set; }
 

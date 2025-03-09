@@ -79,7 +79,7 @@
                                 Preserving beauty, capturing hearts.<br>
                                 Love at first sight.
                             </h3>
-                            <a data-animation="fadeInUp" data-delay="500ms" asp-controller="" asp-action="" class="btn oneMusic-btn mt-50" style="border-radius: 20px; border-color:black; background-color:black; color:white">Learn More</a>
+                            <a data-animation="fadeInUp" data-delay="500ms" asp-controller="Home" asp-action="About" class="btn oneMusic-btn mt-50" style="border-radius: 20px; border-color:black; background-color:black; color:white">Learn More</a>
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="section-heading style-2">
-                    <h2>Product(them anh vao`) </h2>
+                    <h2>Product </h2>
                 </div>
             </div>
         </div>
@@ -131,7 +131,7 @@
                         {
                             <div class="single-album wow fadeInUp" data-wow-delay="100ms">
                                 <div class="album-thumbnail">
-                                    <a asp-controller="*" asp-action="*" asp-route-id="@item.Idproduct">
+                                    <a asp-controller="Product" asp-action="Product" asp-route-id="@item.Idproduct">
                                         <img src="@item.ImgProduct" alt="Pic Product">
                                     </a>
                                 </div>

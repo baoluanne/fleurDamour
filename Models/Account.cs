@@ -27,6 +27,10 @@ public partial class Account
 
     public DateTime? LogDate { get; set; }
 
+    public virtual ICollection<CommentDetail> CommentDetails { get; set; } = new List<CommentDetail>();
+
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; } = new List<ShoppingCart>();

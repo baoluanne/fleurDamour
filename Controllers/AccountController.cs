@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using fleurDamour.Models;
+using fleurDamour.Utilities;
 
 namespace fleurDamour.Controllers
 {
@@ -105,7 +106,9 @@ namespace fleurDamour.Controllers
                 Phone = phone,
                 Address = address,
                 AccountName = accountname,
-                Role = "User"
+                Role = "User",
+                PicAccount ="/img/image/13.png"
+                
             };
             db.Accounts.Add(NewUser);
             await db.SaveChangesAsync();
@@ -131,23 +134,54 @@ namespace fleurDamour.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProfile(Account updatedAccount)
+        public async Task<IActionResult> EditProfile(int Uid, string AccountName, string Email, string Phone, string Address, IFormFile PicAccount)
         {
-            var userName = HttpContext.Session.GetString("UserName");
-            if (userName == null) return RedirectToAction("Login");
+            var User = db.Accounts.SingleOrDefault(u => u.Uid == Uid);
+            if (User != null)
+            {
+                if (AccountName != null) { User.AccountName = AccountName; }
+                if (Email != null) { User.Email = Email; }
+                if (Phone != null) { User.Phone = Phone; }
+                if (Address != null) { User.Address = Address; }
+                
+                if (PicAccount != null && PicAccount.Length > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    var extension = Path.GetExtension(PicAccount.FileName).ToLower();
 
-            var user = await db.Accounts.SingleOrDefaultAsync(a => a.UserName == userName);
-            if (user == null) return RedirectToAction("Index", "Home");
+                    if (allowedExtensions.Contains(extension))
+                    {
+                        var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "image");
+                        if (!Directory.Exists(uploadPath))
+                        {
+                            Directory.CreateDirectory(uploadPath);
+                        }
+                        var existingFiles = Directory.GetFiles(uploadPath, $"{User.Uid}.*");
+                        foreach (var filePath in existingFiles)
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                        var newFileName = $"{User.Uid}{extension}";
+                        var fullPath = Path.Combine(uploadPath, newFileName);
+                        using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            await PicAccount.CopyToAsync(fileStream);
+                        }
+                        User.PicAccount = Path.Combine("/img/image/", newFileName);
+                    }
+                    else
+                    {
+                        User.PicAccount = "/img/image/13.png";
+                    }
+                }
+                else
+                {
+                    User.PicAccount = "/img/image/13.png";
+                }
 
-            user.AccountName = updatedAccount.AccountName;
-            user.Email = updatedAccount.Email;
-            user.Address = updatedAccount.Address;
-            user.Phone = updatedAccount.Phone;
-            user.DateOfBirth = updatedAccount.DateOfBirth;
-
-            db.Accounts.Update(user);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Profile");
+                db.SaveChanges();
+            }
+            return RedirectToAction("Profile", "Account");
         }
     }
 }

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<fleurDamour.Models.Comment>
+
+@{
+    ViewData["Title"] = "Comment Management";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Comment Management</h1>
+
+<table id="TableData" class="table table-striped table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Idcomments)</th>
+            <th>@Html.DisplayNameFor(model => model.Uid)</th>
+            <th>@Html.DisplayNameFor(model => model.Idproduct)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Idcomments)</td>
+                <td>@Html.DisplayFor(modelItem => item.Uid)</td>
+                <td>@Html.DisplayFor(modelItem => item.Idproduct)</td>
+                <td>
+                    <a class="modal-button" data-modal="DeleteModal_@item.Idcomments" href="#">
+                        <i class="fa-regular fa-trash-can" style="color: #000000; font-size: 200%;"></i>
+                    </a>
+                    <div class="modal" id="DeleteModal_@item.Idcomments" style="background-color: rgba(0, 0, 0, 0.6);">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    Are you sure you want to delete <span style="font-weight: bold">@item.Idcomments</span>?
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Idcomments">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#TableData").DataTable();
+        });
+    </script>
+}

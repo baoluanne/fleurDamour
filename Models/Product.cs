@@ -15,7 +15,9 @@ public partial class Product
 
     public double? Price { get; set; }
 
-    public string? Quantity { get; set; }
+    public int? Quantity { get; set; }
+
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; } = new List<ShoppingCart>();
 
