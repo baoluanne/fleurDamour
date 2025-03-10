@@ -2,6 +2,8 @@
     ViewData["Title"] = "Register";
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
 <style>
     body.register-page footer {
         display: none;
@@ -11,64 +13,285 @@
         background-image: url('/img/image/login.png');
         background-size: cover;
         background-position: center;
+        min-height: 150vh;
+        margin: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        font-family: 'Arial', sans-serif;
     }
 
-    .login-content {
-        padding: 40px;
+    .register-content {
+        width: 90%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2.5rem;
+        background: linear-gradient(135deg, rgba(22, 21, 12, 0.95), rgba(50, 48, 28, 0.9));
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(220, 196, 12, 0.2);
+        text-align: center;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .register-content h3 {
+        color: #fff;
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+    }
+
+    .register-content .logo {
+        max-width: 25%;
+        height: auto;
+        margin-bottom: 1.5rem;
+        filter: drop-shadow(0 0 5px rgba(220, 196, 12, 0.3));
+        transition: transform 0.3s ease;
+    }
+
+        .register-content .logo:hover {
+            transform: scale(1.05);
+        }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.2rem;
+    }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 12px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .input-group input:focus, .input-group select:focus {
+                outline: none;
+                background-color: #fff;
+                box-shadow: 0 0 8px rgba(220, 196, 12, 0.5);
+            }
+
+    .form-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+        margin: -0.8rem 0 1.2rem 1rem;
+    }
+
+    .register-form button {
+        width: 100%;
+        padding: 0.9rem;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #DCC40C, #e6d047);
+        border: none;
+        color: #16150c;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        font-weight: 600;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .register-form button:hover {
+            background: linear-gradient(90deg, #e6d047, #DCC40C);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 196, 12, 0.4);
+        }
+
+    .links {
+        margin-top: 1.2rem;
+        color: #fff;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        text-align: center;
+    }
+
+        .links a {
+            color: #DCC40C;
+            margin-left: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .links a:hover {
+                color: #fff;
+                text-decoration: underline;
+            }
+
+    .error-message {
+        color: #ff5555;
+        margin-bottom: 1.2rem;
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        font-weight: 600;
+    }
+
+    .input-group-append {
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group-text {
+        padding: 0.9rem 1.5rem;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #DCC40C, #e6d047);
+        border: none;
+        color: #16150c;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .input-group-text:hover {
+            background: linear-gradient(90deg, #e6d047, #DCC40C);
+            box-shadow: 0 4px 12px rgba(220, 196, 12, 0.4);
+        }
+
+    #verifyBtn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
     }
 </style>
 
-<section class="login-area">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12" style="padding-top: 100px">
-                <div class="login-content" style="border-radius: 20px; background-color: rgba(22, 21, 12, 0.9);">
-                    <h3 style="color: white">Fleur D Amour (them logo o day)</h3>
-                    <div class="login-form">
-                        <form method="post">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="user" placeholder="UserName" style="border-radius: 10px">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="accountname" placeholder="AccountName" style="border-radius: 10px">
-                            </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control" name="email" placeholder="Email" style="border-radius: 10px">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="address" placeholder="Address" style="border-radius: 10px">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="phone" placeholder="Phone" style="border-radius: 10px">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" name="pass" placeholder="Password" style="border-radius: 10px">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" style="border-radius: 10px">
-                            </div>
-                            @if (@ViewBag.Error != null)
-                            {
-                                <div class="mt-4">
-                                    <div class="d-flex justify-content-center links">
-                                        <span style="font-weight:bold; color: red;">@ViewBag.Error</span>
-                                    </div>
-                                </div>
-                            }
-                            <button type="submit" class="btn oneMusic-btn mt-30" style="border-radius: 10px">Register</button>
-                        </form>
-                        <div class="mt-4">
-                            <div class="d-flex justify-content-center links" style="color: white">
-                                Already have an account? <a asp-action="Login" class="ml-2" style="color:#DCC40C">Login</a>
-                            </div>
-                        </div>
+<section class="register-area">
+    <div class="register-content">
+        <img src="/img/image/logo/logo1.png" alt="Fleur D'Amour Logo" class="logo" />
+        <h3>Register</h3>
+        <div class="register-form">
+            <form method="post">
+                <!-- Username Field -->
+                <div class="input-group mb-3">
+                    <input type="text" name="user" placeholder="Username" class="form-control" required>
+                </div>
+
+                <!-- Account Name Field -->
+                <div class="input-group mb-3">
+                    <input type="text" name="accountname" placeholder="Account Name" class="form-control" required>
+                </div>
+
+                <!-- Email Field with Verify Button -->
+                <div class="input-group mb-3">
+                    <input type="email" name="email" id="email" placeholder="Email" class="form-control" required>
+                    <div class="input-group-append">
+                        <button type="button" class="input-group-text" id="verifyBtn" disabled onclick="submitEmail()"><i class="fa fa-check"></i></button>
                     </div>
                 </div>
+
+                <!-- OTP Code Field -->
+                <div class="input-group mb-3" id="codeVerifyField" style="display: none;">
+                    <input type="text" name="codeVerify" placeholder="OTP Code" class="form-control" required>
+                </div>
+
+                <!-- Address Field -->
+                <div class="input-group mb-3">
+                    <input type="text" name="address" placeholder="Address" class="form-control" required>
+                </div>
+
+                <!-- Phone Field -->
+                <div class="input-group mb-3">
+                    <input type="text" name="phone" placeholder="Phone" class="form-control" required>
+                </div>
+
+                <!-- Password Field -->
+                <div class="input-group mb-3">
+                    <input type="password" name="pass" placeholder="Password" class="form-control" required>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="input-group mb-3">
+                    <input type="password" name="confirmPassword" placeholder="Confirm Password" class="form-control" required>
+                </div>
+
+                <!-- Form Text -->
+                <small class="form-text">
+                    <i class="fa fa-lock mr-2"></i>Your account is safe with us
+                </small>
+
+                <!-- Error Message -->
+                @if (@ViewBag.Error != null)
+                {
+                    <div class="error-message">
+                        @ViewBag.Error
+                    </div>
+                }
+
+                <!-- Register Button -->
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+
+            <!-- Links -->
+            <div class="links">
+                Already have an account? <a asp-action="Login">Login</a>
+            </div>
+            <div class="links">
+                Or sign in with: <a asp-action="LoginWithGoogle">Google</a>
             </div>
         </div>
     </div>
 </section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function submitEmail() {
+        var email = $('input[name="email"]').val();
+        var username = $('input[name="user"]').val();
+        $.ajax({
+            url: '@Url.Action("VerifyCodeAjax", "Account")',
+            type: 'POST', // Chỉ định method POST
+            data: {
+                username: username,
+                email: email
+            },
+            success: function (data) {
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while verifying email: " + error);
+            }
+        });
+    }
+
+    const emailInput = document.getElementById('email');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const codeVerifyField = document.getElementById('codeVerifyField');
+
+    emailInput.addEventListener('input', function () {
+        const email = emailInput.value;
+        if (email.trim() !== "") {
+            verifyBtn.disabled = false;
+        } else {
+            verifyBtn.disabled = true;
+        }
+    });
+
+    verifyBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        codeVerifyField.style.display = 'flex';
+    });
+</script>

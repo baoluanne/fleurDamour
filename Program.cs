@@ -1,7 +1,14 @@
-﻿using fleurDamour.Models; // Add this to reference your models namespace
-using Microsoft.EntityFrameworkCore; // Add this for EF Core
+﻿using fleurDamour.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add logging
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+    logging.AddDebug();
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -14,24 +21,22 @@ builder.Services.AddSession(options =>
 // Register FleurDamourContext with the DI container
 builder.Services.AddDbContext<FleurDamourContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// Replace UseSqlServer with your database provider if different (e.g., UseSqlite)
 
-/* Uncomment and configure authentication if needed
+// Add Authentication with Google
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = "Cookies";
+    options.DefaultSignInScheme = "Cookies";
+    options.DefaultChallengeScheme = "Google";
 })
-    .AddCookie()
-    .AddGoogle(options =>
-    {
-        var googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-        options.ClientId = googleAuthNSection["ClientID"];
-        options.ClientSecret = googleAuthNSection["ClientSecret"];
-        options.CallbackPath = "/signin-google";
-    });
-*/
+.AddCookie()
+.AddGoogle(options =>
+{
+    var googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+    options.ClientId = googleAuthNSection["ClientID"];
+    options.ClientSecret = googleAuthNSection["ClientSecret"];
+    options.CallbackPath = "/signin-google";
+});
 
 var app = builder.Build();
 
@@ -42,11 +47,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseAuthentication(); // Only needed if authentication is uncommented
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

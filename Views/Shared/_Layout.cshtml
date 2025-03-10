@@ -14,12 +14,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@ViewData["Title"] - fleurDamour</title>
-    <link rel="icon" type="image/x-icon" href="img/image/13.png">
+    <link rel="icon" type="image/x-icon" href="img/image/logo/logo2.png">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css">
     <link rel="stylesheet" href="~/css/style.css">
     <style>
-
+        .classy-navbar .nav-brand img{
+            max-width: 200px;
+        }
         /* Footer Area */
         .footer-area {
             color: #fff;
@@ -108,7 +110,9 @@
 </head>
 
 
-<body class="@(currentController == "Account" && currentAction == "Login" ? "login-page" : (currentController == "Account" && currentAction == "Register" ? "register-page" : ""))">
+<body class="@(currentController == "Account" && currentAction == "Login" ? "login-page" :
+               (currentController == "Account" && currentAction == "Register" ? "register-page" :
+               (currentController == "Account" && currentAction == "ForgotPassword" ? "forgotpassword-page" : "")))">
 
     <!-- Preloader -->
     <div class="preloader d-flex align-items-center justify-content-center">
@@ -129,7 +133,7 @@
                     <!-- Menu -->
                     <nav class="classy-navbar justify-content-between" id="oneMusicNav">
                         <!-- logo -->
-                        <a asp-controller="Home" asp-action="Index" class="nav-brand"><img src="@Url.Content("~/img/image/13.png")" alt=""></a>
+                        <a asp-controller="Home" asp-action="Index" class="nav-brand"><img src="@Url.Content("~/img/image/logo/logo1.png")" alt=""></a>
                         <!-- Navbar Toggler -->
                         <div class="classy-navbar-toggler">
                             <span class="navbarToggler"><span></span><span></span><span></span></span>
@@ -245,7 +249,7 @@
                 <div class="col-12 col-md-6">
                     <nav class="classy-navbar">
                         <a asp-controller="Home" asp-action="Index" class="nav-brand">
-                            <img src="@Url.Content("~/img/image/13.png")" alt="">
+                            <img src="@Url.Content("~/img/image/logo/logo1.png")" alt="">
                             <i class="fa fa-check-circle" style="font-size:15px;color: green"></i>
                         </a>
                     </nav>
