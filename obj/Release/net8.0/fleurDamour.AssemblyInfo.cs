@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("fleurDamour")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5286c0192ea3428c104c2dff016e03ec2cd94f19")]
 [assembly: System.Reflection.AssemblyProductAttribute("fleurDamour")]
 [assembly: System.Reflection.AssemblyTitleAttribute("fleurDamour")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

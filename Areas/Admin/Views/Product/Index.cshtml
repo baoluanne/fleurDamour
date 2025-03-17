@@ -9,7 +9,12 @@
 
 <h1>Product Management</h1>
 
-<p><button href="#createModal" class="btn btn-primary" data-toggle="modal">Create new product</button></p>
+<!-- Nút mở modal Create -->
+<p>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+        Create new product
+    </button>
+</p>
 
 <table id="TableData" class="table table-striped table-bordered table-sm">
     <thead>
@@ -20,13 +25,13 @@
             <th>@Html.DisplayNameFor(model => model.Price)</th>
             <th>@Html.DisplayNameFor(model => model.Quantity)</th>
             <th>@Html.DisplayNameFor(model => model.Idcategories)</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="row_@item.Idproduct">
                 <td><img src="@item.ImgProduct" alt="Product" style="max-height:50px; border-radius:5px" /></td>
                 <td>@Html.DisplayFor(modelItem => item.Idproduct)</td>
                 <td>@Html.DisplayFor(modelItem => item.NameProduct)</td>
@@ -36,114 +41,64 @@
                     @foreach (var cat in item.Idcategories)
                     {
                         <span>@cat.NameCategory</span>
-                        if (item.Idcategories.Last() != cat)
+                        @if (item.Idcategories.Last() != cat)
                         {
                             <span> - </span>
                         }
                     }
                 </td>
                 <td>
-                    <a class="modal-button" data-modal="EditModal_@item.Idproduct" href="#"><i class="fa-regular fa-pen-to-square" style="color: #000000; font-size: 200%;"></i></a>
-                    <div class="modal" id="EditModal_@item.Idproduct" style="background-color: rgba(0, 0, 0, 0.6);">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <form asp-action="Edit" method="post">
-                                    <div class="modal-body">
-                                        <input name="Idproduct" value="@item.Idproduct" type="hidden" />
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
-                                            <input type="text" name="ImgProduct" class="form-control" value="@item.ImgProduct" placeholder="Image URL" />
-                                        </div>
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="fa-solid fa-tag"></i></span>
-                                            <input type="text" name="NameProduct" class="form-control" value="@item.NameProduct" placeholder="Product Name" />
-                                        </div>
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
-                                            <input type="number" name="Price" class="form-control" value="@item.Price" placeholder="Price" />
-                                        </div>
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
-                                            <input type="number" name="Quantity" class="form-control" value="@item.Quantity" placeholder="Quantity" />
-                                        </div>
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="fa-solid fa-info"></i></span>
-                                            <input type="text" name="InfoProduct" class="form-control" value="@item.InfoProduct" placeholder="Product Info" />
-                                        </div>
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
-                                            <select name="Idcategory" class="form-control">
-                                                @foreach (var category in db.Categories)
-                                                {
-                                                    <option value="@category.Idcategory" selected="@(item.Idcategories.Any(c => c.Idcategory == category.Idcategory))">@category.NameCategory</option>
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-success">Edit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Nút mở modal Edit -->
+                    <button type="button" class="btn btn-warning edit-product"
+                            data-id="@item.Idproduct"
+                            data-name="@item.NameProduct"
+                            data-img="@item.ImgProduct"
+                            data-price="@item.Price"
+                            data-quantity="@item.Quantity"
+                            data-info="@item.InfoProduct"
+                            data-bs-toggle="modal" data-bs-target="#editModal">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
 
-                    <a class="modal-button" data-modal="DeleteModal_@item.Idproduct" href="#"><i class="fa-regular fa-trash-can" style="color: #000000; font-size: 200%;"></i></a>
-                    <div class="modal" id="DeleteModal_@item.Idproduct" style="background-color: rgba(0, 0, 0, 0.6);">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    Are you sure you want to delete <span style="font-weight: bold">@item.NameProduct (@item.Idproduct)</span>?
-                                </div>
-                                <div class="modal-footer">
-                                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Idproduct">Delete</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Nút xóa bằng AJAX -->
+                    <button type="button" class="btn btn-danger delete-product" data-id="@item.Idproduct">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<!-- Modal Create -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <form asp-action="Create" method="post">
+            <form id="createForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
                 <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-id-badge"></i></span>
-                        <input type="text" name="Idproduct" class="form-control" placeholder="Product ID" />
+                    <div class="mb-3">
+                        <label class="form-label">Product ID</label>
+                        <input type="text" id="createId" class="form-control" required />
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-tag"></i></span>
-                        <input type="text" name="NameProduct" class="form-control" placeholder="Product Name" />
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" id="createName" class="form-control" required />
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
-                        <input type="text" name="ImgProduct" class="form-control" placeholder="Image URL" />
+                    <div class="mb-3">
+                        <label class="form-label">Image URL</label>
+                        <input type="text" id="createImg" class="form-control" />
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
-                        <input type="number" name="Price" class="form-control" placeholder="Price" />
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="number" id="createPrice" class="form-control" required />
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
-                        <input type="number" name="Quantity" class="form-control" placeholder="Quantity" />
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-info"></i></span>
-                        <input type="text" name="InfoProduct" class="form-control" placeholder="Product Info" />
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
-                        <select name="Idcategory" class="form-control">
-                            @foreach (var category in db.Categories)
-                            {
-                                <option value="@category.Idcategory">@category.NameCategory</option>
-                            }
-                        </select>
+                    <div class="mb-3">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" id="createQuantity" class="form-control" required />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -154,10 +109,103 @@
     </div>
 </div>
 
+<!-- Modal Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editId" />
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" id="editName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image URL</label>
+                        <input type="text" id="editImg" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="number" id="editPrice" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" id="editQuantity" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         $(document).ready(function () {
             $("#TableData").DataTable();
+
+            // Xử lý Create bằng AJAX
+            $("#createForm").submit(function (e) {
+                e.preventDefault();
+                $.post("/Admin/Product/Create", {
+                    Idproduct: $("#createId").val(),
+                    NameProduct: $("#createName").val(),
+                    ImgProduct: $("#createImg").val(),
+                    Price: $("#createPrice").val(),
+                    Quantity: $("#createQuantity").val()
+                }, function (data) {
+                    location.reload();
+                }).fail(function () {
+                    alert("Error creating product.");
+                });
+            });
+
+            // Xử lý Edit (Lấy dữ liệu vào modal)
+            $(".edit-product").click(function () {
+                $("#editId").val($(this).data("id"));
+                $("#editName").val($(this).data("name"));
+                $("#editImg").val($(this).data("img"));
+                $("#editPrice").val($(this).data("price"));
+                $("#editQuantity").val($(this).data("quantity"));
+            });
+
+            // Gửi Edit bằng AJAX
+            $("#editForm").submit(function (e) {
+                e.preventDefault();
+                $.post("/Admin/Product/Edit", {
+                    Idproduct: $("#editId").val(),
+                    NameProduct: $("#editName").val(),
+                    ImgProduct: $("#editImg").val(),
+                    Price: $("#editPrice").val(),
+                    Quantity: $("#editQuantity").val()
+                }, function (data) {
+                    location.reload();
+                }).fail(function () {
+                    alert("Error updating product.");
+                });
+            });
+
+            // Xử lý Delete bằng AJAX
+            $(".delete-product").click(function () {
+                var productId = $(this).data("id");
+                if (confirm("Are you sure you want to delete this product?")) {
+                    $.post("/Admin/Product/Delete?id=" + productId, function (data) {
+                        if (data.success) {
+                            $("#row_" + productId).fadeOut();
+                        } else {
+                            alert(data.message);
+                        }
+                    }).fail(function () {
+                        alert("Error deleting product.");
+                    });
+                }
+            });
         });
     </script>
 }

@@ -1,0 +1,63 @@
+@using fleurDamour.Models
+@model fleurDamour.Models.Product
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post">
+    <div class="modal-body">
+        <input name="Idproduct" value="@Model.Idproduct" type="hidden" />
+        
+        <!-- Image URL -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+            <input type="text" name="ImgProduct" class="form-control" value="@Model.ImgProduct" placeholder="Image URL" />
+        </div>
+
+        <!-- Product Name -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fa-solid fa-tag"></i></span>
+            <input type="text" name="NameProduct" class="form-control" value="@Model.NameProduct" placeholder="Product Name" />
+        </div>
+
+        <!-- Price -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
+            <input type="number" name="Price" class="form-control" value="@Model.Price" placeholder="Price" />
+        </div>
+
+        <!-- Quantity -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
+            <input type="number" name="Quantity" class="form-control" value="@Model.Quantity" placeholder="Quantity" />
+        </div>
+
+        <!-- Product Info -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fa-solid fa-info"></i></span>
+            <input type="text" name="InfoProduct" class="form-control" value="@Model.InfoProduct" placeholder="Product Info" />
+        </div>
+
+        <!-- Category Selection -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
+            <select name="Idcategory" class="form-control">
+                @foreach (var category in ViewBag.Categories as List<fleurDamour.Models.Category>)
+                {
+                    <option value="@category.Idcategory" 
+                        selected="@(Model.Idcategories.Any(c => c.Idcategory == category.Idcategory))">
+                        @category.NameCategory
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="@Url.Action("Index", "Product")" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

@@ -7,7 +7,12 @@
 
 <h1>Category Management</h1>
 
-<p><button href="#createModal" class="btn btn-primary" data-toggle="modal">Create new category</button></p>
+<!-- Nút mở modal Create -->
+<p>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+        Create new category
+    </button>
+</p>
 
 <table id="TableData" class="table table-striped table-bordered table-sm">
     <thead>
@@ -15,80 +20,91 @@
             <th>@Html.DisplayNameFor(model => model.PicCategory)</th>
             <th>@Html.DisplayNameFor(model => model.Idcategory)</th>
             <th>@Html.DisplayNameFor(model => model.NameCategory)</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="row_@item.Idcategory">
                 <td><img src="@item.PicCategory" alt="Picture" style="max-height:50px; border-radius:5px" /></td>
                 <td>@Html.DisplayFor(modelItem => item.Idcategory)</td>
                 <td>@Html.DisplayFor(modelItem => item.NameCategory)</td>
                 <td>
-                    <a class="modal-button" data-modal="EditModal_@item.Idcategory" href="#"><i class="fa-regular fa-pen-to-square" style="color: #000000; font-size: 200%;"></i></a>
-                    <div class="modal" id="EditModal_@item.Idcategory" style="background-color: rgba(0, 0, 0, 0.6);">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <form asp-action="Edit" method="post">
-                                    <div class="modal-body">
-                                        <input name="Idcategory" value="@item.Idcategory" type="hidden" />
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
-                                            <input type="text" name="NameCategory" class="form-control" value="@item.NameCategory" placeholder="Name Category" />
-                                        </div>
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
-                                            <input type="text" name="PicCategory" class="form-control" value="@item.PicCategory" placeholder="Picture Category" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-success">Edit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Nút mở modal Edit -->
+                    <button type="button" class="btn btn-warning edit-category"
+                            data-id="@item.Idcategory"
+                            data-name="@item.NameCategory"
+                            data-pic="@item.PicCategory"
+                            data-bs-toggle="modal" data-bs-target="#editModal">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
 
-                    <a class="modal-button" data-modal="DeleteModal_@item.Idcategory" href="#"><i class="fa-regular fa-trash-can" style="color: #000000; font-size: 200%;"></i></a>
-                    <div class="modal" id="DeleteModal_@item.Idcategory" style="background-color: rgba(0, 0, 0, 0.6);">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    Are you sure you want to delete <span style="font-weight: bold">@item.NameCategory (@item.Idcategory)</span>?
-                                </div>
-                                <div class="modal-footer">
-                                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Idcategory">Delete</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Nút xóa bằng AJAX -->
+                    <button type="button" class="btn btn-danger delete-category" data-id="@item.Idcategory">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<!-- Modal Create -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <form asp-action="Create" method="post">
+            <form id="createForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
                 <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
-                        <input type="text" name="Idcategory" class="form-control" placeholder="ID Category" />
+                    <div class="mb-3">
+                        <label class="form-label">ID Category</label>
+                        <input type="text" id="createId" class="form-control" required />
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
-                        <input type="text" name="NameCategory" class="form-control" placeholder="Name Category" />
+                    <div class="mb-3">
+                        <label class="form-label">Name Category</label>
+                        <input type="text" id="createName" class="form-control" required />
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
-                        <input type="text" name="PicCategory" class="form-control" placeholder="Picture Category" />
+                    <div class="mb-3">
+                        <label class="form-label">Picture URL</label>
+                        <input type="text" id="createPic" class="form-control" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Create</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editId" />
+                    <div class="mb-3">
+                        <label class="form-label">Name Category</label>
+                        <input type="text" id="editName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Picture URL</label>
+                        <input type="text" id="editPic" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
@@ -99,6 +115,57 @@
     <script>
         $(document).ready(function () {
             $("#TableData").DataTable();
+
+            // Xử lý Create bằng AJAX
+            $("#createForm").submit(function (e) {
+                e.preventDefault();
+                $.post("/Admin/Category/Create", {
+                    Idcategory: $("#createId").val(),
+                    NameCategory: $("#createName").val(),
+                    PicCategory: $("#createPic").val()
+                }, function (data) {
+                    location.reload();
+                }).fail(function () {
+                    alert("Error creating category.");
+                });
+            });
+
+            // Xử lý Edit (Lấy dữ liệu vào modal)
+            $(".edit-category").click(function () {
+                $("#editId").val($(this).data("id"));
+                $("#editName").val($(this).data("name"));
+                $("#editPic").val($(this).data("pic"));
+            });
+
+            // Gửi Edit bằng AJAX
+            $("#editForm").submit(function (e) {
+                e.preventDefault();
+                $.post("/Admin/Category/Edit", {
+                    Idcategory: $("#editId").val(),
+                    NameCategory: $("#editName").val(),
+                    PicCategory: $("#editPic").val()
+                }, function (data) {
+                    location.reload();
+                }).fail(function () {
+                    alert("Error updating category.");
+                });
+            });
+
+            // Xử lý Delete bằng AJAX
+            $(".delete-category").click(function () {
+                var categoryId = $(this).data("id");
+                if (confirm("Are you sure you want to delete this category?")) {
+                    $.post("/Admin/Category/Delete?id=" + categoryId, function (data) {
+                        if (data.success) {
+                            $("#row_" + categoryId).fadeOut();
+                        } else {
+                            alert(data.message);
+                        }
+                    }).fail(function () {
+                        alert("Error deleting category.");
+                    });
+                }
+            });
         });
     </script>
 }

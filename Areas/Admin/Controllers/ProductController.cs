@@ -12,65 +12,83 @@ using Microsoft.JSInterop;
 
 namespace fleurDamour.Areas.Admin.Controllers
 {
-	[Area("Admin")]
-	public class ProductController : Controller
-	{
+    [Area("Admin")]
+    public class ProductController : Controller
+    {
 
-		FleurDamourContext db = new();
+        FleurDamourContext db = new();
 
-		private readonly ILogger<ProductController> _logger;
+        private readonly ILogger<ProductController> _logger;
 
-		public ProductController(ILogger<ProductController> logger)
-		{
-			_logger = logger;
-		}
+        public ProductController(ILogger<ProductController> logger)
+        {
+            _logger = logger;
+        }
 
-		[CheckAdminRole]
-		public IActionResult Index()
-		{
-			return View(db.Products.ToList());
-		}
+        [CheckAdminRole]
+        public IActionResult Index()
+        {
+            return View(db.Products.ToList());
+        }
 
-		[CheckAdminRole]
-		[HttpPost]
-		public IActionResult Create(string Idproduct, string NameProduct, string ImgProduct, int Quantity,  double Price, string InfoProduct, string Idcategory)
-		{
+        [CheckAdminRole]
+        [HttpPost]
+        public IActionResult Create(string Idproduct, string NameProduct, string ImgProduct, int Quantity, double Price, string InfoProduct, string Idcategory)
+        {
+            if (string.IsNullOrEmpty(Idproduct) || string.IsNullOrEmpty(NameProduct) || Price <= 0 || Quantity <= 0)
+            {
+                TempData["Error"] = "Please provide valid product details";
+                return RedirectToAction("Index", "Product");
+            }
 
-			
-			if (Idproduct != null)
-			{
-				var product = db.Products.SingleOrDefault(s => s.Idproduct == Idproduct);
-				if (product == null)
-				{
-					product = new Product();
-					if (Idproduct != null) { product.Idproduct = Idproduct; }
-					if (NameProduct != null) { product.NameProduct = NameProduct; }
-					if (ImgProduct != null) { product.ImgProduct = ImgProduct; }
-					if (Price != null) { product.Price = Price; }
-					if (InfoProduct != null) { product.InfoProduct = InfoProduct; }
-					if(Idcategory != null) { product.Idcategories.SingleOrDefault(s => s.Idcategory == Idcategory); }
-					db.Products.Add(product);
-					db.SaveChanges();
-				}
-			}
-			return RedirectToAction("Index", "Product");
-		}
+            var product = db.Products.SingleOrDefault(s => s.Idproduct == Idproduct);
+            if (product == null)
+            {
+                product = new Product
+                {
+                    Idproduct = Idproduct,
+                    NameProduct = NameProduct,
+                    ImgProduct = ImgProduct,
+                    Price = Price,
+                    Quantity = Quantity,
+                    InfoProduct = InfoProduct
+                };
+
+                // Handle category
+                if (!string.IsNullOrEmpty(Idcategory))
+                {
+                    var category = db.Categories.SingleOrDefault(c => c.Idcategory == Idcategory);
+                    if (category != null)
+                    {
+                        product.Idcategories.Add(category);
+                    }
+                }
+
+                db.Products.Add(product);
+                db.SaveChanges();
+                TempData["Success"] = "Product created successfully";
+            }
+            else
+            {
+                TempData["Error"] = "Product with this ID already exists";
+            }
+
+            return RedirectToAction("Index", "Product");
+        }
+
 
 
 
         [CheckAdminRole]
         [HttpPost]
-        public IActionResult Edit(string Idproduct, string NameProduct, string ImgProduct, double Price,
-    int Quantity, string InfoProduct, string Idcategory)
+        public IActionResult Edit(string Idproduct, string NameProduct, string ImgProduct, double Price, int Quantity, string InfoProduct, string Idcategory)
         {
-            // Check if Idproduct is valid
             if (string.IsNullOrEmpty(Idproduct))
             {
                 TempData["Error"] = "Product not found for editing";
                 return RedirectToAction("Index", "Product");
             }
 
-            // Retrieve the product with its current categories
             var product = db.Products
                 .Include(p => p.Idcategories)
                 .SingleOrDefault(u => u.Idproduct == Idproduct);
@@ -90,16 +108,15 @@ namespace fleurDamour.Areas.Admin.Controllers
                 if (!string.IsNullOrEmpty(ImgProduct))
                     product.ImgProduct = ImgProduct;
 
-                if (Price > 0) // Validate price
+                if (Price > 0)
                     product.Price = Price;
 
-                if (Quantity >= 0) // Validate quantity
+                if (Quantity >= 0)
                     product.Quantity = Quantity;
 
                 if (!string.IsNullOrEmpty(InfoProduct))
                     product.InfoProduct = InfoProduct;
 
-                // Handle category update
                 if (!string.IsNullOrEmpty(Idcategory))
                 {
                     var category = db.Categories.SingleOrDefault(c => c.Idcategory == Idcategory);
@@ -109,16 +126,11 @@ namespace fleurDamour.Areas.Admin.Controllers
                         return RedirectToAction("Index", "Product");
                     }
 
-                    // Remove existing categories if any
-                    if (product.Idcategories.Any())
-                    {
-                        product.Idcategories.Clear();
-                    }
-
-                    // Add new category
+                    product.Idcategories.Clear();
                     product.Idcategories.Add(category);
                 }
 
+                db.Products.Update(product);
                 db.SaveChanges();
                 TempData["Success"] = "Product updated successfully";
                 return RedirectToAction("Index", "Product");
@@ -129,6 +141,7 @@ namespace fleurDamour.Areas.Admin.Controllers
                 return RedirectToAction("Index", "Product");
             }
         }
+
 
 
         [CheckAdminRole]
@@ -143,7 +156,6 @@ namespace fleurDamour.Areas.Admin.Controllers
 
             var product = db.Products
                 .Include(p => p.Comments)
-                .ThenInclude(c => c.CommentDetails)
                 .Include(p => p.ShoppingCarts)
                 .Include(p => p.Idcategories)
                 .SingleOrDefault(u => u.Idproduct == id);
@@ -151,19 +163,16 @@ namespace fleurDamour.Areas.Admin.Controllers
             if (product == null)
             {
                 TempData["Error"] = "Product not found";
-                return RedirectToAction("Index", "Index");
+                return RedirectToAction("Index", "Product");
             }
 
-            using (var transaction = db.Database.BeginTransaction())
+            try
             {
-                try
+                // Begin transaction to ensure data integrity
+                using (var transaction = db.Database.BeginTransaction())
                 {
                     var shoppingCarts = db.ShoppingCarts.Where(sc => sc.Idproduct == id);
                     db.ShoppingCarts.RemoveRange(shoppingCarts);
-
-                    var commentDetails = db.CommentDetails
-                        .Where(cd => db.Comments.Any(c => c.Idcomments == cd.Idcomments && c.Idproduct == id));
-                    db.CommentDetails.RemoveRange(commentDetails);
 
                     var comments = db.Comments.Where(c => c.Idproduct == id);
                     db.Comments.RemoveRange(comments);
@@ -174,21 +183,20 @@ namespace fleurDamour.Areas.Admin.Controllers
                     }
 
                     db.Products.Remove(product);
-
                     db.SaveChanges();
                     transaction.Commit();
+                }
 
-                    TempData["Success"] = "Delete successfully";
-                    return RedirectToAction("Index", "Product");
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    TempData["Error"] = $"Error: {ex.Message}";
-                    return RedirectToAction("Index", "Product");
-                }
+                TempData["Success"] = "Product deleted successfully";
+                return RedirectToAction("Index", "Product");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error deleting product: {ex.Message}";
+                return RedirectToAction("Index", "Product");
             }
         }
+
     }
 }
 
